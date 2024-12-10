@@ -10,7 +10,7 @@
     "outDir": "./dist",                     // Output compiled files to "dist" folder
     "rootDir": "./src",                     // Your source code is in the "src" folder
     "resolveJsonModule": true,              // Allow importing JSON files
-    "types": ["node"],                      // Use Node.js types for the server-side code
+    "types": ["node", "jest"],                      // Use Node.js types for the server-side code
     "noImplicitAny": false                  // Allow implicit 'any' type (adjust based on your preference)
   },
   "include": [
