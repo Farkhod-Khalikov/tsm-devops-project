@@ -1,24 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ES2020",                    // Modern JavaScript target
-    "module": "CommonJS",                   // Output CommonJS modules (ideal for Node.js)
-    "moduleResolution": "node",             // Node.js-style module resolution
-    "esModuleInterop": true,                // Enable ES module compatibility (e.g., `import fs from 'fs'`)
-    "strict": true,                         // Enable strict type-checking options
-    "skipLibCheck": true,                   // Skip type checking of declaration files
+    "target": "ES2020", // Modern JavaScript target
+    "module": "CommonJS", // Output CommonJS modules (ideal for Node.js)
+    "moduleResolution": "node", // Node.js-style module resolution
+    "esModuleInterop": true, // Enable ES module compatibility (e.g., `import fs from 'fs'`)
+    "strict": true, // Enable strict type-checking options
+    "skipLibCheck": true, // Skip type checking of declaration files
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist",                     // Output compiled files to "dist" folder
-    "rootDir": "./src",                     // Your source code is in the "src" folder
-    "resolveJsonModule": true,              // Allow importing JSON files
-    "types": ["node", "jest"],                      // Use Node.js types for the server-side code
-    "noImplicitAny": false                  // Allow implicit 'any' type (adjust based on your preference)
+    "outDir": "./dist", // Output compiled files to "dist" folder
+    "rootDir": "./src", // Your source code is in the "src" folder
+    "resolveJsonModule": true, // Allow importing JSON files
+    "types": ["node", "jest"], // Use Node.js types for the server-side code
+    "noImplicitAny": true // Allow implicit 'any' type (adjust based on your preference)
   },
   "include": [
-    "src/**/*.ts",                          // Include all TypeScript files in the "src" folder
-    "src/**/*.d.ts"                         // Include declaration files
+    "src/**/*.ts", // Include all TypeScript files in the "src" folder
+    "src/**/*.d.ts" // Include declaration files
   ],
   "exclude": [
-    "node_modules",                         // Exclude "node_modules" from compilation
-    "dist"                                  // Exclude the output "dist" folder
+    "node_modules", // Exclude "node_modules" from compilation
+    "dist" // Exclude the output "dist" folder
   ]
 }
