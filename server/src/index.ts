@@ -1,12 +1,20 @@
 import dotenv from 'dotenv';
 import app from './express'; // Import Express app from express.ts
+import Logger from './utils/logger';
 
-// use environment variables
+// Use environment variables
 dotenv.config();
 
-// Start the server
-app.listen(process.env.PORT || 5000, () => {
-  console.log(
-    `Server is running on http://localhost:${process.env.PORT || 5000}`,
-  );
-});
+try {
+  // Start the Express server
+  app.listen(process.env.PORT || 5000, () => {
+    Logger.info('Express server is starting...');
+  });
+} catch (error) {
+  // Handle errors and log them
+  if (error instanceof Error) {
+    Logger.error(`Server failed to start: ${error.message}`);
+  } else {
+    Logger.error('Unknown error occurred while starting the server');
+  }
+}
