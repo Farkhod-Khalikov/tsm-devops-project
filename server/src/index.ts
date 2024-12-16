@@ -1,20 +1,19 @@
+// src/index.ts
 import dotenv from 'dotenv';
-import app from './express'; // Import Express app from express.ts
+import app from './express'; // Assuming Express app is set up in express.ts
 import Logger from './utils/logger';
+import connectDB from './utils/db'; // Import the MongoDB connection function
 
 // Use environment variables
 dotenv.config();
 
+// Connect to MongoDB
+connectDB();
+
 try {
-  // Start the Express server
   app.listen(process.env.PORT || 5000, () => {
-    Logger.info('Express server is starting...');
+    Logger.info('Express server started');
   });
 } catch (error) {
-  // Handle errors and log them
-  if (error instanceof Error) {
-    Logger.error(`Server failed to start: ${error.message}`);
-  } else {
-    Logger.error('Unknown error occurred while starting the server');
-  }
+  Logger.error('Error starting Express server');
 }
