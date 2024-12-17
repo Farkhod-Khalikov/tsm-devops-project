@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../express';
+import app from '../utils/express';
 
 describe('Server', () => {
   it('should respond with a 200 status code', async () => {

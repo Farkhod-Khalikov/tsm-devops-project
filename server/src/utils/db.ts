@@ -1,23 +1,19 @@
-// src/utils/db.ts
-
 import mongoose from 'mongoose';
-import Logger from './logger'; // Assuming logger is already set up
+import Logger from './logger'; // Custom logger for logging messages
 
-const connectDB = async () => {
+const connectDB = async (): Promise<void> => {
+  const dbURI = process.env.DB_URI || 'mongodb://localhost:27017/test-db';
+
   try {
-    // while testing on localhost mongo db just using dirrect localhost url
-    const conn = await mongoose.connect(
-      process.env.DB_URI ||  'mongodb://localhost:27017/tsm-db',
-      {},
-    );
-    Logger.info(`MongoDB connected: ${conn.connection.host}`);
+    // Attempt to connect to MongoDB
+    await mongoose.connect(dbURI, {});
+    Logger.info(`MongoDB connected: ${dbURI}`);
   } catch (error) {
     if (error instanceof Error) {
+      // Log the error and throw to ensure the promise rejects
       Logger.error(`MongoDB connection failed: ${error.message}`);
-    } else {
-      Logger.error('MongoDB connection failed: ' + error);
     }
-    process.exit(1);
+    throw new Error('MongoDB connection failed'); // Ensure rejection for tests
   }
 };
 
