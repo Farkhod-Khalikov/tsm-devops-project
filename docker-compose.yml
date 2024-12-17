@@ -1,6 +1,8 @@
 version: '3.8'
 
+
 services:
+# Determine the localtion of dockerfile that was written for the backend, in my case its /server
   backend:
     build:
       context: ./server
