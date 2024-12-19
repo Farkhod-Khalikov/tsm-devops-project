@@ -11,6 +11,7 @@ dotenv.config();
 // Connect to MongoDB
 connectDB();
 
+// run the express server
 try {
   app.listen(process.env.PORT || 5000, () => {
     Logger.info('Express server started');

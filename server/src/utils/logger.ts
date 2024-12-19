@@ -1,4 +1,4 @@
-// src/utils/logger.ts
+import chalk from 'chalk';
 
 // Enum for log levels
 export enum LogLevel {
@@ -8,29 +8,54 @@ export enum LogLevel {
   DEBUG = 'DEBUG',
 }
 
-// Basic Logger class
 class Logger {
-  private static log(level: LogLevel, message: string): void {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] [${level}] ${message}`);
+  // Format the timestamp
+  private static getFormattedTimestamp(): string {
+    const now = new Date();
+    return new Intl.DateTimeFormat('en-GB', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+      hour12: false, // Use 24-hour format
+    }).format(now);
   }
 
-  // Info level log
+  private static log(level: LogLevel, message: string): void {
+    const timestamp = this.getFormattedTimestamp();
+
+    // Define colors for each log level
+    let coloredMessage: string;
+    switch (level) {
+      case LogLevel.INFO:
+        coloredMessage = chalk.blue(`[${timestamp}] [${level}] ${message}`);
+        break;
+      case LogLevel.WARN:
+        coloredMessage = chalk.yellow(`[${timestamp}] [${level}] ${message}`);
+        break;
+      case LogLevel.ERROR:
+        coloredMessage = chalk.red(`[${timestamp}] [${level}] ${message}`);
+        break;
+      case LogLevel.DEBUG:
+        coloredMessage = chalk.green(`[${timestamp}] [${level}] ${message}`);
+        break;
+      default:
+        coloredMessage = `[${timestamp}] [${level}] ${message}`;
+    }
+
+    console.log(coloredMessage);
+  }
+
   public static info(message: string): void {
     this.log(LogLevel.INFO, message);
   }
 
-  // Warn level log
   public static warn(message: string): void {
     this.log(LogLevel.WARN, message);
   }
 
-  // Error level log
   public static error(message: string): void {
     this.log(LogLevel.ERROR, message);
   }
 
-  // Debug level log (can be useful in development)
   public static debug(message: string): void {
     this.log(LogLevel.DEBUG, message);
   }
