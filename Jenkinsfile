@@ -2,8 +2,10 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO_URL = 'https://github.com/Farkhod-Khalikov/tsm-devops-project.git'  // Replace with your repository URL
+        // Define your repository URL and branch name
+        GIT_REPO_URL = 'https://github.com/Farkhod-Khalikov/tsm-devops-project.git'  // Replace with your repo URL
         BRANCH_NAME = 'main'  // Replace with your desired branch
+        DOCKER_IMAGE_TAG = 'latest'  // Tag for your Docker image
     }
 
     stages {
@@ -20,6 +22,7 @@ pipeline {
                             git init
                             git remote add origin $GIT_REPO_URL
                             git fetch --tags --force --progress --prune origin +refs/heads/$BRANCH_NAME:refs/remotes/origin/$BRANCH_NAME
+                            git checkout $BRANCH_NAME
                         '''
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
@@ -29,35 +32,74 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Images') {
             steps {
-                echo "Building the project..."
-                // Add your build steps here
-                // For example: sh './build.sh'
+                script {
+                    echo "Building Docker images with Docker Compose..."
+                    // Build the images as per the docker-compose.yml file
+                    sh '''
+                        docker-compose -f docker-compose.yml build
+                    '''
+                }
             }
         }
 
-        // Additional stages can be added here
+        stage('Run Tests') {
+            steps {
+                script {
+                    echo "Running tests inside the container..."
+                    // Start containers, but in detached mode (background)
+                    sh '''
+                        docker-compose -f docker-compose.yml up -d
+                    '''
+                    // Wait for the services to initialize
+                    sleep(time: 10, unit: 'SECONDS')
+                    // Run tests (for example, backend tests)
+                    // Replace with your actual test command, e.g., running Mocha, Jest, etc.
+                    sh '''
+                        docker exec -it backend yarn jest  // Replace with your actual test command
+                    '''
+                }
+            }
+        }
 
         stage('Deploy') {
             steps {
-                echo "Deploying the application..."
-                // Add your deployment steps here
+                script {
+                    echo "Deploying the services..."
+                    // Start the containers in the foreground to simulate a deployment stage
+                    sh '''
+                        docker-compose -f docker-compose.yml up
+                    '''
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    echo "Cleaning up Docker containers..."
+                    // Stop and remove the containers after the deployment
+                    sh '''
+                        docker-compose -f docker-compose.yml down
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo "Build and deploy completed successfully."
+            echo "Build, test, and deploy completed successfully."
         }
         failure {
-            echo "Build or deploy failed."
+            echo "Build, test, or deploy failed."
         }
         always {
-            echo "Cleaning up..."
-            // Optional: Clean up after the build
+            echo "Cleaning up workspace..."
+            // Clean workspace after every build
             deleteDir()
         }
     }
 }
+ 
