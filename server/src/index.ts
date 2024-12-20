@@ -5,6 +5,8 @@ import app from './utils/express'; // Assuming Express app is set up in express.
 import Logger from './utils/logger';
 import connectDB from './utils/db'; // Import the MongoDB connection function
 
+
+
 // Use environment variables
 dotenv.config();
 
@@ -17,5 +19,7 @@ try {
     Logger.info('Express server started');
   });
 } catch (error) {
-  Logger.error('Error starting Express server');
+  if (error instanceof Error)
+    Logger.error(`Error starting express server: ${error.message}`);
+  else Logger.error('Unknonw Error occured while starting express server');
 }

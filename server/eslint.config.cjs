@@ -52,6 +52,7 @@ module.exports = [
     plugins: { '@typescript-eslint': tsPlugin },
     rules: {
       ...tsConfigs.recommended.rules,
+      'no-unused-vars': ['off'],
     },
   },
 

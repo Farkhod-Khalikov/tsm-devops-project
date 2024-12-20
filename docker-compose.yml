@@ -1,6 +1,5 @@
 version: '3.8'
 
-
 services:
 # Determine the localtion of dockerfile that was written for the backend, in my case its /server
   backend:
@@ -22,9 +21,9 @@ services:
     container_name: mongo
     env_file:
      - ./server/.env
-    # environment:
-    #   - MONGO_INITDB_ROOT_USERNAME=${DB_USER}  # Set the root user for MongoDB from .env
-    #   - MONGO_INITDB_ROOT_PASSWORD=${DB_PASS}  # Set the root password for MongoDB from .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test  # Set the root user for MongoDB from .env
+      - MONGO_INITDB_ROOT_PASSWORD=test # Set the root password for MongoDB from .env
     ports:
       - "27017:27017"  # Expose MongoDB's default port
     networks:
