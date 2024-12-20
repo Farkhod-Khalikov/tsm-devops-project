@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+# Determine the localtion of dockerfile that was written for the backend, in my case its /server
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "5000:5000"  # Map host port to container port for the backend (Express server)
+    env_file:
+      - ./server/.env  # Load environment variables from the server/.env file
+    # environment:
+    #   - DB_URI=${DB_URI}
+    #   - DB_USER=${DB_USER}
+    #   - DB_PASS=${DB_PASS}
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:latest  # Use official MongoDB image from Docker Hub
+    container_name: mongo
+    env_file:
+     - ./server/.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test  # Set the root user for MongoDB from .env
+      - MONGO_INITDB_ROOT_PASSWORD=test # Set the root password for MongoDB from .env
+    ports:
+      - "27017:27017"  # Expose MongoDB's default port
+    networks:
+      - app-network
+    volumes:
+      - mongo-data:/data/db  # Persist MongoDB data between container restarts
+
+volumes:
+  mongo-data:  # This volume will persist MongoDB data
+
+networks:
+  app-network:  # Custom network for communication between containers
+    driver: bridge
