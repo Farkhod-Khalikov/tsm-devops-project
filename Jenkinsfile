@@ -14,15 +14,14 @@ pipeline {
                 script {
                     // Clean the workspace before fetching to avoid any residual issues
                     deleteDir()
-                    // Checkout the code from the repository
+                    // Checkout the code from the repository using PowerShell
                     try {
                         echo "Fetching the latest code from the repository..."
-                        // Fetch with options to avoid issues with timeouts or remote issues
-                        sh '''
+                        powershell '''
                             git init
-                            git remote add origin $GIT_REPO_URL
-                            git fetch --tags --force --progress --prune origin +refs/heads/$BRANCH_NAME:refs/remotes/origin/$BRANCH_NAME
-                            git checkout $BRANCH_NAME
+                            git remote add origin $env:GIT_REPO_URL
+                            git fetch --tags --force --progress --prune origin +refs/heads/$env:BRANCH_NAME:refs/remotes/origin/$env:BRANCH_NAME
+                            git checkout $env:BRANCH_NAME
                         '''
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
@@ -36,8 +35,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker images with Docker Compose..."
-                    // Build the images as per the docker-compose.yml file
-                    sh '''
+                    powershell '''
                         docker-compose -f docker-compose.yml build
                     '''
                 }
@@ -49,15 +47,15 @@ pipeline {
                 script {
                     echo "Running tests inside the container..."
                     // Start containers, but in detached mode (background)
-                    sh '''
+                    powershell '''
                         docker-compose -f docker-compose.yml up -d
                     '''
                     // Wait for the services to initialize
                     sleep(time: 10, unit: 'SECONDS')
                     // Run tests (for example, backend tests)
                     // Replace with your actual test command, e.g., running Mocha, Jest, etc.
-                    sh '''
-                        docker exec -it backend yarn jest  // Replace with your actual test command
+                    powershell '''
+                        docker exec -it backend npm run test  // Replace with your actual test command
                     '''
                 }
             }
@@ -68,7 +66,7 @@ pipeline {
                 script {
                     echo "Deploying the services..."
                     // Start the containers in the foreground to simulate a deployment stage
-                    sh '''
+                    powershell '''
                         docker-compose -f docker-compose.yml up
                     '''
                 }
@@ -80,7 +78,7 @@ pipeline {
                 script {
                     echo "Cleaning up Docker containers..."
                     // Stop and remove the containers after the deployment
-                    sh '''
+                    powershell '''
                         docker-compose -f docker-compose.yml down
                     '''
                 }
@@ -102,4 +100,3 @@ pipeline {
         }
     }
 }
- 

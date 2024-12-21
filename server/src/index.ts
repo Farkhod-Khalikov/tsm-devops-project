@@ -6,7 +6,6 @@ import Logger from './utils/logger';
 import connectDB from './utils/db'; // Import the MongoDB connection function
 
 
-
 // Use environment variables
 dotenv.config();
 
