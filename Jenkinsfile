@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     echo "Injecting .env file and running tests..."
-                    withCredentials([file(credentialsId: 'server-env-file', variable: 'ENV_FILE')]) {
+                    withCredentials([file(credentialsId: 'server-env', variable: 'ENV_FILE')]) {
                         powershell '''
                             # Copy the .env file to the server directory
                             cp "$ENV_FILE" server/.env
