@@ -72,7 +72,7 @@ pipeline {
                     '''
                     sleep(time: 10, unit: 'SECONDS')
                     powershell '''
-                        docker exec -it backend yarn jest
+                         docker exec backend yarn jest
                     '''
                 }
             }
