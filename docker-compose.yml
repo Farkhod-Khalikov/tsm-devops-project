@@ -22,6 +22,7 @@ services:
     env_file:
      - ./server/.env
     environment:
+    # need to remove this credentials after testing 
       - MONGO_INITDB_ROOT_USERNAME=test  # Set the root user for MongoDB from .env
       - MONGO_INITDB_ROOT_PASSWORD=test # Set the root password for MongoDB from .env
     ports:
