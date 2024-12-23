@@ -5,7 +5,6 @@ pipeline {
         GIT_REPO_URL = 'https://github.com/Farkhod-Khalikov/tsm-devops-project.git'  // Replace with your repo URL
         BRANCH_NAME = 'main'  // Replace with your desired branch
         DOCKER_IMAGE_TAG = 'latest'  // Tag for your Docker image
-        ENV_FILE = '/tmp/secret/.env'  // Path to the secret file on Jenkins agent
     }
 
     stages {
@@ -36,15 +35,19 @@ pipeline {
                 script {
                     // Ensure the .env file is available at the specified location
                     echo "Copying .env file from Jenkins credentials..."
-                    powershell '''
-                        if (Test-Path $env:ENV_FILE) {
-                            Copy-Item -Path $env:ENV_FILE -Destination 'server/.env' -Force
-                            echo ".env file copied successfully."
-                        } else {
-                            echo "Error: .env file not found at $env:ENV_FILE"
-                            exit 1
-                        }
-                    '''
+                    // Use Jenkins 'withCredentials' to securely access the .env file stored in credentials
+                    withCredentials([file(credentialsId: 'server-env-file', variable: 'ENV_FILE')]) {
+                        powershell '''
+                            if (Test-Path $env:ENV_FILE) {
+                                # Copy the .env file to the server directory
+                                Copy-Item -Path $env:ENV_FILE -Destination 'server/.env' -Force
+                                echo ".env file copied successfully."
+                            } else {
+                                echo "Error: .env file not found at $env:ENV_FILE"
+                                exit 1
+                            }
+                        '''
+                    }
                 }
             }
         }
