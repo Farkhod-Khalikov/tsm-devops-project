@@ -36,7 +36,7 @@ pipeline {
                     // Ensure the .env file is available at the specified location
                     echo "Copying .env file from Jenkins credentials..."
                     // Use Jenkins 'withCredentials' to securely access the .env file stored in credentials
-                    withCredentials([file(credentialsId: 'server-env-file', variable: 'ENV_FILE')]) {
+                    withCredentials([file(credentialsId: 'server-env', variable: 'ENV_FILE')]) {
                         powershell '''
                             if (Test-Path $env:ENV_FILE) {
                                 # Copy the .env file to the server directory
