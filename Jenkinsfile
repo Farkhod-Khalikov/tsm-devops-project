@@ -13,7 +13,6 @@ pipeline {
                 script {
                     // Clean the workspace before fetching to avoid any residual issues
                     deleteDir()
-                    // Checkout the code from the repository using PowerShell
                     try {
                         echo "Fetching the latest code from the repository..."
                         powershell '''
@@ -44,7 +43,14 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    echo "Running tests inside the container..."
+                    echo "Injecting .env file and running tests..."
+                    withCredentials([file(credentialsId: 'server-env-file', variable: 'ENV_FILE')]) {
+                        powershell '''
+                            # Copy the .env file to the server directory
+                            cp "$ENV_FILE" server/.env
+                        '''
+                    }
+
                     powershell '''
                         docker-compose -f docker-compose.yml up -d
                     '''
@@ -61,7 +67,7 @@ pipeline {
                 script {
                     echo "Deploying the services..."
                     powershell '''
-                        docker-compose -f docker-compose.yml up
+                        docker-compose -f docker-compose.yml up -d
                     '''
                 }
             }
