@@ -1,5 +1,6 @@
+// SignUpForm.tsx
 import React, { useState } from 'react';
-import '../styles/Login.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
 
 interface SignUpFormProps {
   onSwitchToLogin: () => void;
@@ -8,6 +9,7 @@ interface SignUpFormProps {
 const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
   const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
   const [message, setMessage] = useState<string | null>(null);
+  const navigate = useNavigate(); // Use useNavigate to handle navigation
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,7 +44,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
         setMessage('User registered successfully!');
         setTimeout(() => {
           setMessage(null);
-          onSwitchToLogin(); // Switch back to login form
+          navigate('/main'); // Navigate to the main page after successful registration
         }, 1500);
       } else {
         setMessage(data.message || 'Registration failed.');
@@ -53,36 +55,49 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <div className="form-container">
+    <div className="login-form">
       <h2>Register</h2>
-      {message && <p className="message">{message}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
-          onChange={handleInputChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-        />
-        <button type="submit">Register</button>
+      {message && <p className={`message ${message === 'User registered successfully!' ? 'success' : ''}`}>{message}</p>}
+      <form onSubmit={handleSubmit} className="form">
+        <div className="input-group">
+          <label htmlFor="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="input-group">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit" className="form-button">Register</button>
       </form>
-      <button className="link-button" onClick={onSwitchToLogin}>
-        Already have an account? Sign In
-      </button>
+      <div className="separator">
+        <span>OR</span>
+      </div>
+      <button onClick={onSwitchToLogin} className="link-button">Already have an account? Login</button>
     </div>
   );
 };
