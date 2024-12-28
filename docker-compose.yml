@@ -1,42 +1,47 @@
 version: '3.8'
 
 services:
-# Determine the localtion of dockerfile that was written for the backend, in my case its /server
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80" # Map Nginx port 80 to localhost:3000
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - app-network
+
   backend:
-    image: backend-image
-    container_name: backend
     build:
       context: ./server
+    container_name: backend
     ports:
-      - "5000:5000"  # Map host port to container port for the backend (Express server)
+      - "5000:5000"  # Map backend's internal port 5000 to host port 5000
     env_file:
-      - ./server/.env  # Load environment variables from the server/.env file
-    # environment:
-    #   - DB_URI=${DB_URI}
-    #   - DB_USER=${DB_USER}
-    #   - DB_PASS=${DB_PASS}
+      - ./server/.env  # Load environment variables from .env file
     networks:
       - app-network
+# uncomment this the deploying with mongo db
+#   mongo:
+#     image: mongo:latest  # Use the official MongoDB image
+#     container_name: mongo
+#     env_file:
+#       - ./server/.env
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=test  # Root user for MongoDB (testing)
+#       - MONGO_INITDB_ROOT_PASSWORD=test  # Root password for MongoDB (testing)
+#     ports:
+#       - "27017:27017"  # Expose MongoDB's default port
+#     networks:
+#       - app-network
+#     volumes:
+#       - mongo-data:/data/db  # Persist MongoDB data between container restarts
 
-  mongo:
-    image: mongo:latest  # Use official MongoDB image from Docker Hub
-    container_name: mongo
-    env_file:
-     - ./server/.env
-    environment:
-    # need to remove this credentials after testing 
-      - MONGO_INITDB_ROOT_USERNAME=test  # Set the root user for MongoDB from .env
-      - MONGO_INITDB_ROOT_PASSWORD=test # Set the root password for MongoDB from .env
-    ports:
-      - "27017:27017"  # Expose MongoDB's default port
-    networks:
-      - app-network
-    volumes:
-      - mongo-data:/data/db  # Persist MongoDB data between container restarts
-
-volumes:
-  mongo-data:  # This volume will persist MongoDB data
+# volumes:
+#   mongo-data:  # Volume for MongoDB data persistence
 
 networks:
-  app-network:  # Custom network for communication between containers
+  app-network:  # Network for inter-service communication
     driver: bridge

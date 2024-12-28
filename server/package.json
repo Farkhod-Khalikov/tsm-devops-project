@@ -41,7 +41,9 @@
     "typescript-eslint": "^8.18.0"
   },
   "dependencies": {
+    "@types/cors": "^2.8.17",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.9.0"
