@@ -8,5 +8,5 @@ const router = Router();
 
 // POST /api/auth/register - Register a new user
 router.post('/register', AuthController.register);
-
+router.post('/login', AuthController.login);
 export default router;

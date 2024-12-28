@@ -24,8 +24,12 @@ const SignInForm: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         setMessage("Login successful!");
-        setTimeout(() => setMessage(null), 1500);
-        // Redirect or handle successful login
+        setTimeout(() => {
+          setMessage(null);
+          // Redirect or handle successful login
+          // For example, redirect to the main page
+          window.location.href = "/main"; // Adjust the redirect URL as needed
+        }, 1500);
       } else {
         setMessage(
           data.message || "Login failed. Please check your credentials."
@@ -67,6 +71,14 @@ const SignInForm: React.FC = () => {
           Sign In
         </button>
       </form>
+      {/* <div className="signup-link">
+        <p>
+          Don't have an account?{" "}
+          <a href="/signup" className="link-to-signup">
+            Sign up here
+          </a>
+        </p>
+      </div> */}
     </div>
   );
 };
